@@ -94,7 +94,7 @@ public interface Chain {
             return handlerContract ->
                     Optional.ofNullable(handlerContract)
                             .map(contract -> contract.obligate(handler))
-                            .map(newChain -> (ChainFunction<A, R>) a -> newChain.apply(a).orElse(apply(a)))
+                            .map(newChain -> (ChainFunction<A, R>) a -> newChain.apply(a).orElseGet(() -> apply(a)))
                             .orElse(this);
         }
 
