@@ -130,14 +130,14 @@ public interface Chain {
          *   - protect current handler function
          *   - invoke current handler function and next one
          *
-         * @param handler to protect
+         * @param handlerConsumer to protect
          * @return HandlerContract function
          */
-        default HandlerContract<A> chain(Consumer<A> handler) {
+        default HandlerContract<A> chain(Consumer<A> handlerConsumer) {
             return handlerContract ->
-                    Optional.ofNullable(handlerContract)
-                            .map(contract -> contract.obligate(handler))
-                            .map(newChain -> (ChainConsumer<A>) a -> { newChain.accept(a); accept(a); })
+                    Optional.ofNullable(handlerConsumer)
+                            .filter(handler -> handlerContract != null)
+                            .map(handler -> (ChainConsumer<A>) a -> { if(handlerContract.test(a)) handler.accept(a); else accept(a); })
                             .orElse(this);
         }
 
