@@ -18,6 +18,6 @@ public interface Logger extends Consumer<LogEvent> {
     }
 
     enum Level {
-        INFO, DEBUG, WARNING, ERROR;
+        DEBUG, INFO, WARNING, ERROR
     }
 }

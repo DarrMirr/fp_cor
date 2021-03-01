@@ -3,6 +3,7 @@ package com.github.darrmirr.fp.utils;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 /**
  * It is implementation of Chain of Responsibility pattern at functional way
@@ -24,7 +25,7 @@ public interface Chain {
      * @param <R> function's output value type
      * @return Chain that represent java.util.function.Function
      */
-    static <A, R> ChainFunction<A, R> chainDefault(ChainFunction<A, R> defaultChain) {
+    static <A, R> HandlerFunction<A, R> chainDefault(HandlerFunction<A, R> defaultChain) {
         return defaultChain;
     }
 
@@ -33,13 +34,13 @@ public interface Chain {
      *
      * Default chain is added implicitly and return null if it is invoked
      *
-     * @param function function that would be represent one element of chain
+     * @param handler function that would be represent one element of chain
      * @param <A> function's input value type
      * @param <R> function's output value type
      * @return function that create contract for input chain function
      */
-    static <A, R> ChainFunction.HandlerContract<A, R> chain(Function<A, R> function) {
-        return Chain.<A, R>chainDefault(a -> null).chain(function);
+    static <A, R> HandlerFunction.HandlerContract<A, R> chain(Function<A, R> handler) {
+        return Chain.<A, R>chainDefault(a -> null).chain(handler);
     }
 
     /**
@@ -51,7 +52,7 @@ public interface Chain {
      * @param <A> function's input value type
      * @return Chain that represent java.util.function.Consumer
      */
-    static <A> ChainConsumer<A> chainDefault(ChainConsumer<A> defaultChain) {
+    static <A> HandlerConsumer<A> chainDefault(HandlerConsumer<A> defaultChain) {
         return defaultChain;
     }
 
@@ -60,12 +61,12 @@ public interface Chain {
      *
      * Default chain is added implicitly and do nothing if it is invoked
      *
-     * @param consumer function that would be represent one element of chain
+     * @param handler function that would be represent one element of chain
      * @param <A> function's input value type
      * @return function that create contract for input chain function
      */
-    static <A> ChainConsumer.HandlerContract<A> chain(ChainConsumer<A> consumer) {
-        return Chain.<A>chainDefault(a -> {}).chain(consumer);
+    static <A> HandlerConsumer.HandlerContract<A> chain(HandlerConsumer<A> handler) {
+        return Chain.<A>chainDefault(a -> {}).chain(handler);
     }
 
     /**
@@ -78,7 +79,7 @@ public interface Chain {
      * @param <R> function's output value type
      */
     @FunctionalInterface
-    interface ChainFunction<A, R> extends Function<A, R> {
+    interface HandlerFunction<A, R> extends Function<A, R> {
 
         /**
          * Implementation of HandlerContract function
@@ -94,7 +95,7 @@ public interface Chain {
             return handlerContract ->
                     Optional.ofNullable(handlerContract)
                             .map(contract -> contract.obligate(handler))
-                            .map(newChain -> (ChainFunction<A, R>) a -> newChain.apply(a).orElseGet(() -> apply(a)))
+                            .map(newChain -> (HandlerFunction<A, R>) a -> newChain.apply(a).orElseGet(() -> apply(a)))
                             .orElse(this);
         }
 
@@ -108,7 +109,7 @@ public interface Chain {
          */
         @FunctionalInterface
         interface HandlerContract<A, R> {
-            ChainFunction<A, R> responsibility(Contract<A> handlerContract);
+            HandlerFunction<A, R> responsibility(Contract<A> handlerContract);
         }
     }
 
@@ -121,7 +122,7 @@ public interface Chain {
      * @param <A> function's input value type
      */
     @FunctionalInterface
-    interface ChainConsumer<A> extends Consumer<A> {
+    interface HandlerConsumer<A> extends Consumer<A> {
 
         /**
          * Implementation of HandlerContract function
@@ -136,8 +137,8 @@ public interface Chain {
         default HandlerContract<A> chain(Consumer<A> handlerConsumer) {
             return handlerContract ->
                     Optional.ofNullable(handlerConsumer)
-                            .filter(handler -> handlerContract != null)
-                            .map(handler -> (ChainConsumer<A>) a -> { if(handlerContract.test(a)) handler.accept(a); else accept(a); })
+                            .filter(nextHandler -> handlerContract != null)
+                            .map(nextHandler -> (HandlerConsumer<A>) a -> { if(handlerContract.test(a)) nextHandler.accept(a); else accept(a); })
                             .orElse(this);
         }
 
@@ -150,7 +151,7 @@ public interface Chain {
          */
         @FunctionalInterface
         interface HandlerContract<A> {
-            ChainConsumer<A> responsibility(Contract<A> handlerContract);
+            HandlerConsumer<A> responsibility(Contract<A> handlerContract);
         }
     }
 }
