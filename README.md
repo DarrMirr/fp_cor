@@ -1,1 +1,3 @@
-# Chain of Responsibility implementation at functional way
+# Functional Chain of Responsibility
+
+##### Useful pattern at functional way
