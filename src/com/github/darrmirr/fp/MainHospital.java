@@ -19,17 +19,13 @@ public interface MainHospital {
         var newPatient = new Patient(THERAPIST);
 
         var hospital = Chain
-                .chain((Patient patient) ->
-                        patient.conclusion = THERAPIST + " - person is healthy")
+                .chain(Hospital.visit(THERAPIST))
                 .responsibility(Hospital.directTo(THERAPIST)::test)
-                .chain(patient ->
-                        patient.conclusion = ANOTHER_DOCTOR + " - (zzzZ)")
+                .chain(Hospital.visit(ANOTHER_DOCTOR))
                 .responsibility(Hospital.directTo(ANOTHER_DOCTOR)::test)
-                .chain(patient ->
-                        patient.conclusion = NURSE + " - procedure room is busy")
+                .chain(Hospital.visit(NURSE))
                 .responsibility(Hospital.directTo(NURSE)::test)
-                .chain(patient ->
-                        patient.conclusion = SURGEON + " - x-ray is required")
+                .chain(Hospital.visit(SURGEON))
                 .responsibility(Hospital.directTo(SURGEON)::test);
 
         System.out.println("Hospital visit result : " + hospital.apply(newPatient));

@@ -5,7 +5,7 @@ package com.github.darrmirr.fp.hospital;
  */
 public class Patient {
     public Hospital.Doctor direction;
-    public String conclusion;
+    public String diagnosis;
 
     public Patient(Hospital.Doctor direction) {
         this.direction = direction;
