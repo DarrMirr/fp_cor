@@ -22,10 +22,12 @@ public interface Hospital {
     enum Doctor {
         SURGEON, NURSE, ANOTHER_DOCTOR, THERAPIST;
 
+        private Random random = new Random();
+
         private String diagnose(Patient patient) {
             return Stream
                     .of("x-ray is required", "visit procedure room", "(zzzZ)", "person is healthy")
-                    .skip(new Random().nextInt(5))
+                    .skip(random.nextInt(5))
                     .findAny()
                     .map(diagnosis -> name() + "'s diagnosis is '" + diagnosis + "'")
                     .orElse("doctor office is empty");

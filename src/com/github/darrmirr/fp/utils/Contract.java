@@ -8,6 +8,9 @@ import java.util.function.Predicate;
 /**
  * High order function represent contract for function's input value
  * @param <T> input value class
+ *
+ * @author Darr Mirr
+ * @see <a href="https://github.com/DarrMirr/fp_contract">https://github.com/DarrMirr/fp_contract</a>
  */
 @FunctionalInterface
 public interface Contract<T> extends Predicate<T> {

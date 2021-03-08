@@ -3,7 +3,6 @@ package com.github.darrmirr.fp.utils;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
-import java.util.function.Supplier;
 
 /**
  * It is implementation of Chain of Responsibility pattern at functional way
@@ -12,6 +11,9 @@ import java.util.function.Supplier;
  *
  * CAUTION!
  * Chain is built as LIFO queue (Last Input First Output)
+ *
+ * @author Darr Mirr
+ * @see <a href="https://github.com/DarrMirr/fp_cor">https://github.com/DarrMirr/fp_cor</a>
  */
 public interface Chain {
 
