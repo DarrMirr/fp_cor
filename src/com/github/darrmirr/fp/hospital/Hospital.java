@@ -30,7 +30,7 @@ public interface Hospital {
                     .skip(random.nextInt(5))
                     .findAny()
                     .map(diagnosis -> name() + "'s diagnosis is '" + diagnosis + "'")
-                    .orElse("doctor office is empty");
+                    .orElse(name() + " office is empty");
         }
     }
 }
